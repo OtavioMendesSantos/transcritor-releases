@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transcritor: download</title>
+<meta name="description" content="Transcreve reuniões 100% no seu computador, com o Whisper rodando na GPU.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #efeeea; --card: #ffffff; --fg: #1d1d1b; --muted: #6b6b66;
+    --line: #dddcd6; --accent: #1f5c45; --accent-fg: #ffffff; --accent-soft: #e3efe8;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161615; --panel: #1c1c1a; --card: #222220; --fg: #ecebe6; --muted: #9a9993;
+      --line: #34332f; --accent: #6cc196; --accent-fg: #0f2a1e; --accent-soft: #1f3329;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.55 Inter, ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 56px 16px 72px; }
+  a { color: var(--accent); }
+  code, pre { font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 13.5px; }
+
+  header { display: flex; align-items: center; gap: 16px; }
+  header img { width: 56px; height: 56px; border-radius: 13px; }
+  h1 { margin: 0; font-size: 28px; letter-spacing: -.02em; }
+  .lede { margin: 20px 0 0; font-size: 18px; color: var(--muted); max-width: 60ch; }
+  .lede strong { color: var(--fg); font-weight: 600; }
+
+  .principal { margin-top: 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+  .botao {
+    display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 10px;
+    background: var(--accent); color: var(--accent-fg); text-decoration: none; font-weight: 600;
+    transition: filter .15s;
+  }
+  .botao:hover { filter: brightness(1.08); }
+  .botao[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+  .versao { color: var(--muted); font-size: 14px; }
+
+  h2 { margin: 48px 0 12px; font-size: 18px; letter-spacing: -.01em; }
+  .arquivos { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--card); overflow: hidden; }
+  .arquivos li { display: flex; align-items: center; gap: 16px; padding: 14px 16px; }
+  .arquivos li + li { border-top: 1px solid var(--line); }
+  .arquivos .info { flex: 1; min-width: 0; }
+  .arquivos .tipo { font-weight: 600; }
+  .arquivos .para { color: var(--muted); font-size: 14px; }
+  .arquivos .baixar {
+    display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; padding: 7px 12px; border-radius: 8px;
+    border: 1px solid var(--line); color: var(--fg); text-decoration: none; font-size: 14px; white-space: nowrap;
+  }
+  .arquivos .baixar:hover { background: var(--panel); }
+  .arquivos .tam { color: var(--muted); }
+
+  .cmd { position: relative; margin: 8px 0 0; }
+  .cmd pre {
+    margin: 0; padding: 12px 48px 12px 14px; border-radius: 10px; background: var(--panel);
+    border: 1px solid var(--line); overflow-x: auto;
+  }
+  .copiar {
+    position: absolute; top: 7px; right: 7px; display: grid; place-items: center; width: 30px; height: 30px;
+    border: 0; border-radius: 7px; background: transparent; color: var(--muted); cursor: pointer;
+  }
+  .copiar:hover { background: var(--line); color: var(--fg); }
+  .rotulo { margin: 20px 0 0; font-size: 14px; color: var(--muted); }
+
+  ul.fatos { margin: 0; padding-left: 20px; }
+  ul.fatos li { margin: 6px 0; }
+  .muted { color: var(--muted); }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+  svg.i { width: 16px; height: 16px; flex-shrink: 0; }
+
+  @media (max-width: 520px) {
+    main { padding-top: 32px; }
+    .arquivos li { flex-wrap: wrap; }
+    .arquivos .baixar { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="icon.svg" alt="">
+    <h1>Transcritor</h1>
+  </header>
+  <p class="lede">
+    Transcreve reuniões <strong>100% no seu computador</strong>, com o Whisper rodando na GPU. Nem o áudio nem o texto
+    saem da máquina. Organiza as gravações numa biblioteca, com busca em tudo o que foi dito, player sincronizado e nota
+    de confiança em cada trecho.
+  </p>
+
+  <div class="principal">
+    <a class="botao" id="principal" href="https://github.com/OtavioMendesSantos/transcritor-releases/releases/latest" aria-disabled="false">
+      <svg class="i" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>
+      <span id="principal-texto">Baixar para Linux</span>
+    </a>
+    <span class="versao" id="versao">Buscando a versão mais nova…</span>
+  </div>
+
+  <h2>Linux</h2>
+  <ul class="arquivos" id="arquivos">
+    <li data-sufixo=".AppImage">
+      <div class="info">
+        <div class="tipo">AppImage</div>
+        <div class="para">Qualquer distro recente (Ubuntu 22.04+, Debian 12+, Fedora 36+, Arch). Não instala nada no sistema.</div>
+      </div>
+    </li>
+    <li data-sufixo=".deb">
+      <div class="info">
+        <div class="tipo">.deb</div>
+        <div class="para">Ubuntu, Debian, Mint, Pop!_OS</div>
+      </div>
+    </li>
+    <li data-sufixo=".rpm">
+      <div class="info">
+        <div class="tipo">.rpm</div>
+        <div class="para">Fedora, openSUSE</div>
+      </div>
+    </li>
+  </ul>
+
+  <h2>Instalar</h2>
+  <p class="rotulo">AppImage</p>
+  <div class="cmd"><pre><code>chmod +x Transcritor_*.AppImage
+./Transcritor_*.AppImage</code></pre></div>
+  <p class="rotulo">.deb</p>
+  <div class="cmd"><pre><code>sudo apt install ./Transcritor_*_amd64.deb</code></pre></div>
+  <p class="rotulo">.rpm</p>
+  <div class="cmd"><pre><code>sudo dnf install ./Transcritor-*.rpm</code></pre></div>
+
+  <h2>Bom saber</h2>
+  <ul class="fatos">
+    <li>Na primeira vez, o app baixa o modelo do Whisper que você escolher (o padrão tem ~550 MB). Depois disso,
+      transcrever não usa internet.</li>
+    <li>Usa a GPU pelo Vulkan: funciona com placas NVIDIA, AMD e Intel com o driver instalado. Sem GPU, roda na CPU,
+      mais devagar.</li>
+    <li>Windows e macOS ainda não. Estão planejados.</li>
+  </ul>
+
+  <h2>Conferir o download</h2>
+  <p class="muted" style="margin:0">Baixe o <code>SHA256SUMS</code> da mesma versão para a pasta do instalador e rode:</p>
+  <div class="cmd"><pre><code>sha256sum -c SHA256SUMS --ignore-missing</code></pre></div>
+
+  <footer>
+    <a href="https://github.com/OtavioMendesSantos/transcritor-releases/releases">Todas as versões e notas</a>
+  </footer>
+</main>
+
+<script>
+  const REPO = "OtavioMendesSantos/transcritor-releases";
+  const TODAS = `https://github.com/${REPO}/releases`;
+  const ICONE_BAIXAR = '<svg class="i" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>';
+  const ICONE_COPIAR = '<svg class="i" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5v-2A1.5 1.5 0 0 0 9 2H4A1.5 1.5 0 0 0 2.5 3.5V9A1.5 1.5 0 0 0 4 10.5h1.5"/></svg>';
+  const ICONE_OK = '<svg class="i" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8.5 3.5 3.5L13 4.5"/></svg>';
+
+  const bytes = (n) => n >= 1e9 ? (n / 1e9).toFixed(1).replace(".", ",") + " GB" : Math.round(n / 1e6) + " MB";
+  const data = (iso) => new Date(iso).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
+
+  // Botão de copiar em cada comando.
+  for (const bloco of document.querySelectorAll(".cmd")) {
+    const botao = document.createElement("button");
+    botao.className = "copiar";
+    botao.type = "button";
+    botao.title = "Copiar";
+    botao.innerHTML = ICONE_COPIAR;
+    botao.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(bloco.querySelector("code").textContent);
+        botao.innerHTML = ICONE_OK;
+        setTimeout(() => (botao.innerHTML = ICONE_COPIAR), 1500);
+      } catch {}
+    });
+    bloco.appendChild(botao);
+  }
+
+  function semRelease() {
+    document.getElementById("versao").innerHTML = `Nenhuma versão publicada ainda. <a href="${TODAS}">Ver no GitHub</a>`;
+    document.getElementById("principal").setAttribute("aria-disabled", "true");
+  }
+
+  fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: { Accept: "application/vnd.github+json" } })
+    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then((rel) => {
+      const versao = rel.tag_name.replace(/^v/, "");
+      document.getElementById("versao").innerHTML =
+        `Versão ${versao}, de ${data(rel.published_at)} · <a href="${rel.html_url}">O que mudou</a>`;
+
+      for (const li of document.querySelectorAll("#arquivos li")) {
+        const asset = rel.assets.find((a) => a.name.endsWith(li.dataset.sufixo));
+        if (!asset) continue;
+        const a = document.createElement("a");
+        a.className = "baixar";
+        a.href = asset.browser_download_url;
+        a.innerHTML = `${ICONE_BAIXAR} Baixar <span class="tam">${bytes(asset.size)}</span>`;
+        li.appendChild(a);
+      }
+
+      const appimage = rel.assets.find((a) => a.name.endsWith(".AppImage"));
+      if (appimage) {
+        document.getElementById("principal").href = appimage.browser_download_url;
+        document.getElementById("principal-texto").textContent = "Baixar AppImage";
+      }
+    })
+    .catch((status) => {
+      if (status === 404) return semRelease();
+      // Sem API (limite de requisições, offline): o botão continua levando à página da release.
+      document.getElementById("versao").innerHTML = `<a href="${TODAS}/latest">Ver a versão mais nova no GitHub</a>`;
+    });
+</script>
+</body>
+</html>
