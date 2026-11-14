@@ -1,0 +1,26 @@
+name: Sugerir uma ideia
+description: "Algo novo ou um jeito melhor de fazer."
+title: "[Ideia] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: ideia
+    attributes:
+      label: "O que você gostaria"
+    validations:
+      required: true
+  - type: textarea
+    id: problema
+    attributes:
+      label: "Para que serviria"
+      description: "O problema que isso resolve ou o que ficaria mais fácil."
+  - type: textarea
+    id: como
+    attributes:
+      label: "Alguma ideia de como seria (opcional)"
+      description: "Pode descrever, desenhar ou colar um print de outro app."
+  - type: input
+    id: versao
+    attributes:
+      label: "Versão do app (opcional)"
+      placeholder: "v0.5.0"
