@@ -1,0 +1,46 @@
+name: Relatar um erro
+description: "Algo não funcionou como deveria."
+title: "[Erro] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: aconteceu
+    attributes:
+      label: "O que aconteceu"
+      description: "Descreva o erro. Se apareceu alguma mensagem, copie aqui."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduzir
+    attributes:
+      label: "Como reproduzir"
+      description: "O passo a passo até o erro aparecer."
+      placeholder: |
+        1. Abri a reunião...
+        2. Cliquei em...
+        3. Apareceu...
+  - type: textarea
+    id: esperava
+    attributes:
+      label: "O que você esperava"
+  - type: input
+    id: versao
+    attributes:
+      label: "Versão do app"
+      description: "Aparece no rodapé da barra lateral (ex.: v0.5.0). Vem preenchida quando a issue é aberta pelo app."
+      placeholder: "v0.5.0"
+  - type: dropdown
+    id: pacote
+    attributes:
+      label: "Como instalou"
+      options:
+        - AppImage
+        - .deb
+        - .rpm
+        - Não sei
+  - type: textarea
+    id: log
+    attributes:
+      label: "Prints ou trecho do log (opcional)"
+      description: "Os logs ficam em `~/.local/share/transcritor/logs`. Revise antes de colar; o log pode ter nomes de arquivos."
+      render: text
