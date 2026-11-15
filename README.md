@@ -4,6 +4,10 @@ Transcreve reuniões **100% no seu computador**, com o Whisper rodando na GPU. N
 texto. Também organiza as gravações numa biblioteca, com busca em tudo o que foi dito, player sincronizado e nota de
 confiança em cada trecho.
 
+[![Reunião aberta no Transcritor, com a transcrição e a confiança de cada trecho (reunião fictícia)](demo/capa-760.webp)](https://otaviomendessantos.github.io/transcritor-releases/#funcionando)
+
+**[Veja a gravação do app funcionando](https://otaviomendessantos.github.io/transcritor-releases/#funcionando)**
+
 Este repositório só guarda os instaladores. Baixe a versão mais nova em
 **[Releases](https://github.com/OtavioMendesSantos/transcritor-releases/releases/latest)**.
 
