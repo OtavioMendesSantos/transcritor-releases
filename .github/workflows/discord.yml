@@ -1,0 +1,44 @@
+# Aviso no Discord quando uma versão é publicada (o rascunho criado pelo CI do transcritor vira release).
+# Precisa do segredo DISCORD_WEBHOOK (URL do webhook do canal). Pré-releases não avisam.
+name: Aviso no Discord
+
+on:
+  release:
+    types: [published]
+
+permissions: {}
+
+jobs:
+  discord:
+    name: Avisar no Discord
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mensagem com as novidades
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          TAG: ${{ github.event.release.tag_name }}
+          NOTAS: ${{ github.event.release.body }}
+          RELEASE: ${{ github.event.release.html_url }}
+          DOWNLOAD: https://otaviomendessantos.github.io/transcritor-releases/
+        run: |
+          [ -n "$DISCORD_WEBHOOK" ] || { echo "Sem o segredo DISCORD_WEBHOOK: aviso pulado."; exit 0; }
+          versao="${TAG#v}"
+          # o changelog quebra as linhas longas com recuo; no Discord cada quebra aparece, então elas são juntadas
+          notas="$(printf '%s' "$NOTAS" | perl -0pe 's/\r//g; s/\n[ \t]+/ /g')"
+          jq -n --arg v "$versao" --arg notas "$notas" --arg release "$RELEASE" --arg download "$DOWNLOAD" '
+            # o texto do embed aceita até 4096 caracteres
+            (if ($notas | length) > 3500
+              then ($notas[0:3500] | sub("\n[^\n]*$"; "")) + "\n\n[Ver todas as novidades](\($release))"
+              else $notas end) as $texto
+            | {
+                username: "Transcritor",
+                content: "Versão \($v) do Transcritor disponível. Quem já tem o app recebe a atualização ao abri-lo.",
+                embeds: [{
+                  title: "Novidades da \($v)",
+                  url: $release,
+                  description: $texto,
+                  color: 5763719,
+                  fields: [{ name: "Baixar", value: "[Página de download](\($download))" }]
+                }]
+              }' | curl -fsS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK"
