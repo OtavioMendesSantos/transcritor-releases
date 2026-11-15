@@ -114,8 +114,8 @@
 
   /* Recursos */
   .faixa { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--faixa); }
-  .recursos { display: flex; flex-wrap: wrap; gap: 32px; padding-top: 48px; padding-bottom: 48px; }
-  .recurso { flex: 1 1 220px; display: flex; flex-direction: column; gap: 8px; }
+  .recursos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; padding-top: 48px; padding-bottom: 48px; }
+  .recurso { display: flex; flex-direction: column; gap: 8px; }
   .recurso svg { color: var(--accent); }
   .recurso h2 { margin: 0; font-size: 17px; font-weight: 600; }
   .recurso p { margin: 0; font-size: 15px; color: var(--muted); }
@@ -129,9 +129,9 @@
   .sub strong { color: var(--fg); }
 
   /* Formatos */
-  .formatos { display: flex; flex-wrap: wrap; gap: 20px; }
+  .formatos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .formato {
-    flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 14px;
+    min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 14px;
     border: 1px solid var(--line-2); background: var(--card);
   }
   .formato.destaque { border: 1.5px solid var(--accent); background: var(--accent-bg); }
@@ -163,8 +163,8 @@
   .copiar.ok { color: var(--accent); border-color: var(--accent-borda); }
 
   /* Requisitos */
-  .requisitos { display: flex; flex-wrap: wrap; gap: 16px; }
-  .req { flex: 1 1 250px; padding: 20px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); display: flex; flex-direction: column; gap: 6px; }
+  .requisitos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .req { padding: 20px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); display: flex; flex-direction: column; gap: 6px; }
   .req .rot { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-2); }
   .req .val { font-weight: 600; }
   .req .obs { font-size: 15px; color: var(--muted); }
@@ -191,6 +191,29 @@
   footer .dir { display: flex; flex-wrap: wrap; gap: 8px 24px; }
   footer a { display: inline-flex; align-items: center; gap: 6px; }
 
+  /* Duas colunas: o recomendado ocupa a linha toda, com o comando ao lado. */
+  @media (max-width: 1100px) {
+    .formatos { grid-template-columns: 1fr 1fr; }
+    .formato.destaque {
+      grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 32px; align-content: start;
+      grid-template-areas: "cab depois" "texto depois" "baixar depois";
+    }
+    .formato.destaque .cab { grid-area: cab; }
+    .formato.destaque > p { grid-area: texto; }
+    .formato.destaque .baixar { grid-area: baixar; }
+    .formato.destaque .depois { grid-area: depois; align-self: end; }
+  }
+  @media (max-width: 1000px) {
+    .recursos, .requisitos { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .formatos { grid-template-columns: 1fr; }
+    .formato.destaque { display: flex; }
+    .formato.destaque .depois { align-self: stretch; }
+  }
+  @media (max-width: 560px) {
+    .recursos, .requisitos { grid-template-columns: 1fr; }
+  }
   @media (max-width: 640px) {
     .wrap { padding-left: 16px; padding-right: 16px; }
     .abertura { padding-top: 40px; gap: 40px; }
@@ -412,7 +435,7 @@
     <div class="dir">
       <a href="https://github.com/OtavioMendesSantos/transcritor-releases/releases">Todas as versões e notas</a>
       <a href="https://github.com/OtavioMendesSantos/transcritor-releases/issues/new/choose">Relatar um problema</a>
-      <a href="https://nubank.com.br/cobrar/c4os1/685987e4-79bd-4f35-af8f-e6e56d4d7f27"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3.5v2M12 3.5v2"/></svg>Pague-me um café</a>
+      <a target="_blank" rel="noopener noreferrer" href="https://nubank.com.br/cobrar/c4os1/685987e4-79bd-4f35-af8f-e6e56d4d7f27"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3.5v2M12 3.5v2"/></svg>Pague-me um café</a>
     </div>
   </div>
 </footer>
