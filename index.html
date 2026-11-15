@@ -103,7 +103,26 @@
   /* O app funcionando (gravação com dados fictícios) */
   #funcionando { padding-top: 72px; }
   .janela.demo { user-select: auto; }
-  .janela.demo video { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; background: var(--codigo); }
+  /* O palco reserva o espaço 8:5 (a página não pula) e mostra um skeleton até o poster ou o vídeo chegar. */
+  .palco { position: relative; aspect-ratio: 8 / 5; background: var(--codigo); overflow: hidden; }
+  .palco::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / .04) 50%, transparent 70%) 0 0 / 200% 100%;
+    animation: brilho 1.4s linear infinite; transition: opacity .3s;
+  }
+  .palco.pronto::before { opacity: 0; animation: none; }
+  @keyframes brilho { to { background-position: -200% 0; } }
+  .palco video { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; cursor: pointer; }
+  .palco.pronto video { opacity: 1; }
+  .tocar {
+    position: absolute; right: 14px; bottom: 14px; display: grid; place-items: center; width: 44px; height: 44px;
+    border-radius: 50%; border: 1px solid rgb(255 255 255 / .15); background: rgb(13 17 23 / .72); color: var(--fg);
+    cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: background .15s;
+  }
+  .tocar:hover { background: rgb(13 17 23 / .9); }
+  /* Sem movimento automático, o botão fica grande no meio, como um play de vídeo. */
+  .palco.parado .tocar { right: 50%; bottom: 50%; transform: translate(50%, 50%); width: 64px; height: 64px; background: var(--accent); color: var(--accent-fg); border: 0; }
+  .palco.parado .tocar svg { width: 24px; height: 24px; }
   #baixar { padding-top: 72px; padding-bottom: 24px; }
   #requisitos { padding-top: 56px; padding-bottom: 56px; }
   h2.grande { margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.01em; }
@@ -185,6 +204,10 @@
     .formato.destaque .baixar { grid-area: baixar; }
     .formato.destaque .depois { grid-area: depois; align-self: end; }
   }
+  /* Sem espaço para as duas colunas: a captura do topo sai e o texto ocupa a largura. */
+  @media (max-width: 1104px) {
+    .vitrine { display: none; }
+  }
   @media (max-width: 1000px) {
     .recursos, .requisitos { grid-template-columns: 1fr 1fr; }
   }
@@ -205,6 +228,7 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     * { transition: none !important; }
+    .palco::before { animation: none; }
   }
 </style>
 </head>
@@ -257,8 +281,13 @@
           <b>Transcritor</b>
           <div class="ctl" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <img class="captura" src="demo/capa.webp" width="760" height="600"
+        <picture>
+          <!-- Em telas estreitas a captura some (o vídeo logo abaixo já mostra o app) e nem é baixada. -->
+          <source media="(max-width: 1104px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACw=">
+          <img class="captura" src="demo/capa-760.webp" srcset="demo/capa-760.webp 760w, demo/capa.webp 1520w"
+          sizes="500px" width="760" height="600" fetchpriority="high" decoding="async"
           alt="Reunião aberta no Transcritor: participantes, tags, exportar em .txt, .srt, .vtt e .md, e a transcrição com a confiança de cada trecho (reunião fictícia)">
+        </picture>
       </div>
     </div>
   </section>
@@ -296,10 +325,13 @@
     <div class="janela demo">
       <div class="barra">
         <b>Transcritor</b>
-        <div class="ctl"><i></i><i></i><i></i></div>
+        <div class="ctl" aria-hidden="true"><i></i><i></i><i></i></div>
       </div>
-      <video id="demo" src="demo/transcritor.mp4" poster="demo/poster.jpg" autoplay muted loop playsinline preload="metadata"
-        aria-label="Gravação do Transcritor: tela Início, busca na Biblioteca, reunião aberta ao lado com player, transcrição e visão geral"></video>
+      <div class="palco" id="palco">
+        <video id="demo" data-src="demo/transcritor.mp4" data-poster="demo/poster.jpg" muted loop playsinline preload="none"
+          aria-label="Gravação do Transcritor: tela Início, busca na Biblioteca, reunião aberta ao lado com player, transcrição e visão geral"></video>
+        <button type="button" class="tocar" id="tocar" aria-label="Tocar a gravação"></button>
+      </div>
     </div>
   </section>
 
@@ -416,12 +448,72 @@
   const ICONE_OK = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.5 3.5 3.5L13 4.5"/></svg>';
   const reduzir = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Com "reduzir movimento", a gravação não toca sozinha: fica parada, com os controles.
-  if (reduzir) {
-    const demo = document.getElementById("demo");
-    demo.removeAttribute("autoplay");
-    demo.pause();
-    demo.controls = true;
+  // Gravação: nada é baixado até a seção chegar perto da tela. Toca só enquanto está visível, e um clique pausa.
+  // Com "reduzir movimento" ou economia de dados, só o poster carrega; o vídeo espera o clique no play.
+  {
+    const ICONE_PLAY = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z"/></svg>';
+    const ICONE_PAUSA = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="4" y="3" width="3" height="10" rx="1"/><rect x="9" y="3" width="3" height="10" rx="1"/></svg>';
+    const video = document.getElementById("demo");
+    const palco = document.getElementById("palco");
+    const botao = document.getElementById("tocar");
+    const economia = navigator.connection?.saveData === true;
+    let querParado = reduzir || economia; // a pessoa (ou o sistema) pediu para não tocar
+    let visivel = false;
+
+    const pronto = () => palco.classList.add("pronto");
+    const carregarPoster = () => {
+      if (video.poster) return;
+      const img = new Image();
+      img.onload = pronto;
+      img.src = video.dataset.poster;
+      video.poster = video.dataset.poster;
+    };
+    const carregarVideo = () => {
+      if (video.src) return;
+      carregarPoster();
+      video.preload = "auto";
+      video.src = video.dataset.src;
+    };
+    video.addEventListener("loadeddata", pronto);
+
+    const tocar = () => { carregarVideo(); video.play().catch(() => {}); };
+    const atualizar = () => {
+      const tocando = !video.paused;
+      botao.innerHTML = tocando ? ICONE_PAUSA : ICONE_PLAY;
+      botao.setAttribute("aria-label", tocando ? "Pausar a gravação" : "Tocar a gravação");
+      palco.classList.toggle("parado", !tocando && querParado && !video.currentTime);
+    };
+    video.addEventListener("play", atualizar);
+    video.addEventListener("pause", atualizar);
+
+    const alternar = () => {
+      if (video.paused) { querParado = false; tocar(); }
+      else { querParado = true; video.pause(); }
+    };
+    botao.addEventListener("click", alternar);
+    video.addEventListener("click", alternar);
+    atualizar();
+
+    if ("IntersectionObserver" in window) {
+      // Perto da tela (300 px antes): começa a baixar.
+      new IntersectionObserver((entradas, obs) => {
+        if (!entradas[0].isIntersecting) return;
+        obs.disconnect();
+        querParado ? carregarPoster() : carregarVideo();
+      }, { rootMargin: "300px 0px" }).observe(palco);
+      // Visível de fato: toca; fora da tela ou com a aba escondida: pausa.
+      new IntersectionObserver((entradas) => {
+        visivel = entradas[0].isIntersecting;
+        if (visivel && !querParado) tocar();
+        else if (!visivel) video.pause();
+      }, { threshold: 0.25 }).observe(palco);
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) video.pause();
+        else if (visivel && !querParado) tocar();
+      });
+    } else {
+      querParado ? carregarPoster() : tocar();
+    }
   }
 
   const bytes = (n) => n >= 1e9 ? (n / 1e9).toFixed(1).replace(".", ",") + " GB" : Math.round(n / 1e6) + " MB";
