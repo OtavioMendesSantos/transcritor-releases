@@ -4,6 +4,8 @@ Transcreve reuniões **100% no seu computador**, com o Whisper rodando na GPU. N
 texto. Também organiza as gravações numa biblioteca, com busca em tudo o que foi dito, player sincronizado e nota de
 confiança em cada trecho.
 
+![O Transcritor funcionando: tela Início, busca na Biblioteca, reunião aberta ao lado com player, transcrição e visão geral (reuniões fictícias)](demo/transcritor.gif)
+
 Este repositório só guarda os instaladores. Baixe a versão mais nova em
 **[Releases](https://github.com/OtavioMendesSantos/transcritor-releases/releases/latest)**.
 

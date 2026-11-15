@@ -123,6 +123,11 @@
 
   /* Seções */
   section.secao { display: flex; flex-direction: column; gap: 28px; }
+
+  /* O app funcionando (gravação com dados fictícios) */
+  #funcionando { padding-top: 72px; }
+  .janela.demo { user-select: auto; }
+  .janela.demo video { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; background: var(--codigo); }
   #baixar { padding-top: 72px; padding-bottom: 24px; }
   #requisitos { padding-top: 56px; padding-bottom: 56px; }
   h2.grande { margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.01em; }
@@ -239,6 +244,7 @@
     </a>
     <div class="links">
       <a href="#recursos">Recursos</a>
+      <a href="#funcionando">Funcionando</a>
       <a href="#baixar">Baixar</a>
       <a href="#requisitos">Requisitos</a>
       <a href="https://github.com/OtavioMendesSantos/transcritor-releases/releases">Versões</a>
@@ -332,6 +338,21 @@
         <h2>Confiança por trecho</h2>
         <p>Veja onde vale a pena revisar a transcrição.</p>
       </div>
+    </div>
+  </section>
+
+  <section id="funcionando" class="secao wrap">
+    <div>
+      <h2 class="grande">Veja funcionando</h2>
+      <p class="sub">Início, busca que perdoa erro de digitação, player com a transcrição, visão geral e tela dividida. As reuniões do vídeo são fictícias.</p>
+    </div>
+    <div class="janela demo">
+      <div class="barra">
+        <b>Transcritor</b>
+        <div class="ctl"><i></i><i></i><i></i></div>
+      </div>
+      <video id="demo" src="demo/transcritor.mp4" poster="demo/poster.jpg" autoplay muted loop playsinline preload="metadata"
+        aria-label="Gravação do Transcritor: tela Início, busca na Biblioteca, reunião aberta ao lado com player, transcrição e visão geral"></video>
     </div>
   </section>
 
@@ -447,6 +468,14 @@
   const ICONE_COPIAR = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5v-2A1.5 1.5 0 0 0 9 2H4A1.5 1.5 0 0 0 2.5 3.5V9A1.5 1.5 0 0 0 4 10.5h1.5"/></svg>';
   const ICONE_OK = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.5 3.5 3.5L13 4.5"/></svg>';
   const reduzir = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Com "reduzir movimento", a gravação não toca sozinha: fica parada, com os controles.
+  if (reduzir) {
+    const demo = document.getElementById("demo");
+    demo.removeAttribute("autoplay");
+    demo.pause();
+    demo.controls = true;
+  }
 
   const bytes = (n) => n >= 1e9 ? (n / 1e9).toFixed(1).replace(".", ",") + " GB" : Math.round(n / 1e6) + " MB";
   const data = (iso) => new Date(iso).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
